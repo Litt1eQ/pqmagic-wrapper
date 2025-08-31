@@ -1,0 +1,74 @@
+# Build directories
+build/
+cmake-build-debug/
+cmake-build-release/
+cmake-build-relwithdebinfo/
+cmake-build-minsizerel/
+out/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Compiled object files
+*.o
+*.obj
+*.lo
+
+# Compiled dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+Makefile
+
+# Testing
+Testing/
+CTestTestfile.cmake
+*.gcov
+*.gcda
+*.gcno
+
+# Package files
+*.deb
+*.rpm
+*.tar.gz
+*.zip
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# External dependencies install
+pqmagic_install/
+external/PQMagic/build/
+
+# Ignore liboqs
+external/liboqs/
+
+# Claude
+.claude
+CLAUDE.md
