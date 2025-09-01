@@ -7,29 +7,30 @@
 #define SIG_DILITHIUM_H
 
 #include "pqmagic_wrapper.h"
+#include "pqmagic_api.h"
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 /* Dilithium2 */
-#define PQMAGIC_SIG_dilithium_2_length_public_key    1312
-#define PQMAGIC_SIG_dilithium_2_length_secret_key    2528
-#define PQMAGIC_SIG_dilithium_2_length_signature     2420
+#define PQMAGIC_SIG_dilithium_2_length_public_key    DILITHIUM2_PUBLICKEYBYTES
+#define PQMAGIC_SIG_dilithium_2_length_secret_key    DILITHIUM2_SECRETKEYBYTES
+#define PQMAGIC_SIG_dilithium_2_length_signature     DILITHIUM2_SIGBYTES
 
 PQMAGIC_API PQMAGIC_SIG *PQMAGIC_SIG_dilithium_2_new(void);
 
 /* Dilithium3 */
-#define PQMAGIC_SIG_dilithium_3_length_public_key    1952
-#define PQMAGIC_SIG_dilithium_3_length_secret_key    4000
-#define PQMAGIC_SIG_dilithium_3_length_signature     3293
+#define PQMAGIC_SIG_dilithium_3_length_public_key    DILITHIUM3_PUBLICKEYBYTES
+#define PQMAGIC_SIG_dilithium_3_length_secret_key    DILITHIUM3_SECRETKEYBYTES
+#define PQMAGIC_SIG_dilithium_3_length_signature     DILITHIUM3_SIGBYTES
 
 PQMAGIC_API PQMAGIC_SIG *PQMAGIC_SIG_dilithium_3_new(void);
 
 /* Dilithium5 */
-#define PQMAGIC_SIG_dilithium_5_length_public_key    2592
-#define PQMAGIC_SIG_dilithium_5_length_secret_key    4864
-#define PQMAGIC_SIG_dilithium_5_length_signature     4595
+#define PQMAGIC_SIG_dilithium_5_length_public_key    DILITHIUM5_PUBLICKEYBYTES
+#define PQMAGIC_SIG_dilithium_5_length_secret_key    DILITHIUM5_SECRETKEYBYTES
+#define PQMAGIC_SIG_dilithium_5_length_signature     DILITHIUM5_SIGBYTES
 
 PQMAGIC_API PQMAGIC_SIG *PQMAGIC_SIG_dilithium_5_new(void);
 

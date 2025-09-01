@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include "kem_ml_kem.h"
-#include "pqmagic_api.h"
 
 static PQMAGIC_STATUS ml_kem_768_keypair(uint8_t *public_key, uint8_t *secret_key) {
     int result = pqmagic_ml_kem_768_std_keypair(public_key, secret_key);

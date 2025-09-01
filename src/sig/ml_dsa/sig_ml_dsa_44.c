@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include "sig_ml_dsa.h"
-#include "pqmagic_api.h"
 
 static PQMAGIC_STATUS ml_dsa_44_keypair(uint8_t *public_key, uint8_t *secret_key) {
     int result = pqmagic_ml_dsa_44_std_keypair(public_key, secret_key);

@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include "sig_dilithium.h"
-#include "pqmagic_api.h"
 
 static PQMAGIC_STATUS dilithium_5_keypair(uint8_t *public_key, uint8_t *secret_key) {
     int result = pqmagic_dilithium5_std_keypair(public_key, secret_key);

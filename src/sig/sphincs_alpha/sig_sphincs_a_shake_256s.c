@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include "sig_sphincs_alpha.h"
-#include "pqmagic_api.h"
 
 static PQMAGIC_STATUS sphincs_a_shake_256s_keypair(uint8_t *public_key, uint8_t *secret_key) {
     int result = pqmagic_sphincs_a_shake_256s_simple_std_sign_keypair(public_key, secret_key);

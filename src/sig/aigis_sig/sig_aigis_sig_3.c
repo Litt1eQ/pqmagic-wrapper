@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include "sig_aigis_sig.h"
-#include "pqmagic_api.h"
 
 static PQMAGIC_STATUS aigis_sig_3_keypair(uint8_t *public_key, uint8_t *secret_key) {
     int result = pqmagic_aigis_sig3_std_keypair(public_key, secret_key);

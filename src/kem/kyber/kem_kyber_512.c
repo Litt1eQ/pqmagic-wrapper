@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include "kem_kyber.h"
-#include "pqmagic_api.h"
 
 static PQMAGIC_STATUS kyber_512_keypair(uint8_t *public_key, uint8_t *secret_key) {
     int result = pqmagic_kyber512_std_keypair(public_key, secret_key);

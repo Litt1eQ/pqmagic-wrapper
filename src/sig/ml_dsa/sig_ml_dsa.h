@@ -7,29 +7,30 @@
 #define SIG_ML_DSA_H
 
 #include "pqmagic_wrapper.h"
+#include "pqmagic_api.h"
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 /* ML-DSA-44 */
-#define PQMAGIC_SIG_ml_dsa_44_length_public_key    1312
-#define PQMAGIC_SIG_ml_dsa_44_length_secret_key    2560
-#define PQMAGIC_SIG_ml_dsa_44_length_signature     2420
+#define PQMAGIC_SIG_ml_dsa_44_length_public_key    ML_DSA_44_PUBLICKEYBYTES
+#define PQMAGIC_SIG_ml_dsa_44_length_secret_key    ML_DSA_44_SECRETKEYBYTES
+#define PQMAGIC_SIG_ml_dsa_44_length_signature     ML_DSA_44_SIGBYTES
 
 PQMAGIC_API PQMAGIC_SIG *PQMAGIC_SIG_ml_dsa_44_new(void);
 
 /* ML-DSA-65 */
-#define PQMAGIC_SIG_ml_dsa_65_length_public_key    1952
-#define PQMAGIC_SIG_ml_dsa_65_length_secret_key    4032
-#define PQMAGIC_SIG_ml_dsa_65_length_signature     3309
+#define PQMAGIC_SIG_ml_dsa_65_length_public_key    ML_DSA_65_PUBLICKEYBYTES
+#define PQMAGIC_SIG_ml_dsa_65_length_secret_key    ML_DSA_65_SECRETKEYBYTES
+#define PQMAGIC_SIG_ml_dsa_65_length_signature     ML_DSA_65_SIGBYTES
 
 PQMAGIC_API PQMAGIC_SIG *PQMAGIC_SIG_ml_dsa_65_new(void);
 
 /* ML-DSA-87 */
-#define PQMAGIC_SIG_ml_dsa_87_length_public_key    2592
-#define PQMAGIC_SIG_ml_dsa_87_length_secret_key    4896
-#define PQMAGIC_SIG_ml_dsa_87_length_signature     4627
+#define PQMAGIC_SIG_ml_dsa_87_length_public_key    ML_DSA_87_PUBLICKEYBYTES
+#define PQMAGIC_SIG_ml_dsa_87_length_secret_key    ML_DSA_87_SECRETKEYBYTES
+#define PQMAGIC_SIG_ml_dsa_87_length_signature     ML_DSA_87_SIGBYTES
 
 PQMAGIC_API PQMAGIC_SIG *PQMAGIC_SIG_ml_dsa_87_new(void);
 

@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include "sig_slh_dsa.h"
-#include "pqmagic_api.h"
 
 static PQMAGIC_STATUS slh_dsa_shake_192s_keypair(uint8_t *public_key, uint8_t *secret_key) {
     int result = pqmagic_slh_dsa_shake_192s_simple_std_sign_keypair(public_key, secret_key);
