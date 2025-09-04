@@ -34,89 +34,124 @@ if(MSVC)
     set(CMAKE_C_FLAGS_RELEASE "/O2 /DNDEBUG")
 endif()
 
-# Find PQMagic
+# Build PQMagic with different approaches for Android vs Desktop
 if(NOT TARGET pqmagic_target)
-    # Build PQMagic as external project
-    message(STATUS "Building PQMagic...")
-    
-    # Create build directory for PQMagic
-    set(PQMAGIC_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/PQMagic)
-    set(PQMAGIC_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/external/PQMagic)
-    set(PQMAGIC_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/pqmagic_install)
-    
-    # Configure PQMagic build
-    file(MAKE_DIRECTORY ${PQMAGIC_BUILD_DIR})
-    
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} 
-            -S ${PQMAGIC_SOURCE_DIR}
-            -B ${PQMAGIC_BUILD_DIR}
-            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX=${PQMAGIC_INSTALL_DIR}
-            -DENABLE_TEST=OFF
-            -DENABLE_BENCH=OFF
-        RESULT_VARIABLE PQMAGIC_CONFIG_RESULT
-        OUTPUT_VARIABLE PQMAGIC_CONFIG_OUTPUT
-        ERROR_VARIABLE PQMAGIC_CONFIG_ERROR
-    )
-    
-    if(NOT PQMAGIC_CONFIG_RESULT EQUAL 0)
-        message(FATAL_ERROR "Failed to configure PQMagic: ${PQMAGIC_CONFIG_ERROR}")
-    endif()
-    
-    # Build PQMagic
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} --build ${PQMAGIC_BUILD_DIR} --parallel
-        RESULT_VARIABLE PQMAGIC_BUILD_RESULT
-        OUTPUT_VARIABLE PQMAGIC_BUILD_OUTPUT
-        ERROR_VARIABLE PQMAGIC_BUILD_ERROR
-    )
-    
-    if(NOT PQMAGIC_BUILD_RESULT EQUAL 0)
-        message(FATAL_ERROR "Failed to build PQMagic: ${PQMAGIC_BUILD_ERROR}")
-    endif()
-    
-    # Install PQMagic
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} --install ${PQMAGIC_BUILD_DIR}
-        RESULT_VARIABLE PQMAGIC_INSTALL_RESULT
-        OUTPUT_VARIABLE PQMAGIC_INSTALL_OUTPUT
-        ERROR_VARIABLE PQMAGIC_INSTALL_ERROR
-    )
-    
-    if(NOT PQMAGIC_INSTALL_RESULT EQUAL 0)
-        message(FATAL_ERROR "Failed to install PQMagic: ${PQMAGIC_INSTALL_ERROR}")
-    endif()
-    
-    # Set up imported target
-    add_library(pqmagic_target SHARED IMPORTED)
-    if(WIN32)
-        set_target_properties(pqmagic_target PROPERTIES
-            IMPORTED_LOCATION ${PQMAGIC_INSTALL_DIR}/lib/libpqmagic_std.dll
-            IMPORTED_IMPLIB ${PQMAGIC_INSTALL_DIR}/lib/libpqmagic_std_import.lib
-        )
-    elseif(APPLE)
-        set_target_properties(pqmagic_target PROPERTIES
-            IMPORTED_LOCATION ${PQMAGIC_INSTALL_DIR}/lib/libpqmagic_std.dylib
-        )
+    if(ANDROID)
+        # For Android NDK: use add_subdirectory approach
+        message(STATUS "Building PQMagic as subdirectory for Android...")
+        
+        # Set PQMagic build options
+        set(ENABLE_TEST OFF CACHE BOOL "Disable PQMagic tests")
+        set(ENABLE_BENCH OFF CACHE BOOL "Disable PQMagic benchmarks")
+        
+        # Add PQMagic subdirectory
+        add_subdirectory(external/PQMagic)
+        
+        # Verify the target was created
+        if(TARGET pqmagic_target)
+            message(STATUS "PQMagic target found: pqmagic_target")
+        else()
+            message(FATAL_ERROR "PQMagic target 'pqmagic_target' not found after adding subdirectory")
+        endif()
+        
+        # Set include directories
+        set(PQMAGIC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/PQMagic/include)
+        
     else()
-        set_target_properties(pqmagic_target PROPERTIES
-            IMPORTED_LOCATION ${PQMAGIC_INSTALL_DIR}/lib/libpqmagic_std.so
+        # For Desktop: use ExternalProject approach
+        message(STATUS "Building PQMagic as external project...")
+        
+        # Create build directory for PQMagic
+        set(PQMAGIC_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/PQMagic)
+        set(PQMAGIC_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/external/PQMagic)
+        set(PQMAGIC_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/pqmagic_install)
+        
+        # Configure PQMagic build
+        file(MAKE_DIRECTORY ${PQMAGIC_BUILD_DIR})
+        
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} 
+                -S ${PQMAGIC_SOURCE_DIR}
+                -B ${PQMAGIC_BUILD_DIR}
+                -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                -DCMAKE_INSTALL_PREFIX=${PQMAGIC_INSTALL_DIR}
+                -DENABLE_TEST=OFF
+                -DENABLE_BENCH=OFF
+            RESULT_VARIABLE PQMAGIC_CONFIG_RESULT
+            OUTPUT_VARIABLE PQMAGIC_CONFIG_OUTPUT
+            ERROR_VARIABLE PQMAGIC_CONFIG_ERROR
         )
+        
+        if(NOT PQMAGIC_CONFIG_RESULT EQUAL 0)
+            message(FATAL_ERROR "Failed to configure PQMagic: ${PQMAGIC_CONFIG_ERROR}")
+        endif()
+        
+        # Build PQMagic
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} --build ${PQMAGIC_BUILD_DIR} --parallel
+            RESULT_VARIABLE PQMAGIC_BUILD_RESULT
+            OUTPUT_VARIABLE PQMAGIC_BUILD_OUTPUT
+            ERROR_VARIABLE PQMAGIC_BUILD_ERROR
+        )
+        
+        if(NOT PQMAGIC_BUILD_RESULT EQUAL 0)
+            message(FATAL_ERROR "Failed to build PQMagic: ${PQMAGIC_BUILD_ERROR}")
+        endif()
+        
+        # Install PQMagic
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} --install ${PQMAGIC_BUILD_DIR}
+            RESULT_VARIABLE PQMAGIC_INSTALL_RESULT
+            OUTPUT_VARIABLE PQMAGIC_INSTALL_OUTPUT
+            ERROR_VARIABLE PQMAGIC_INSTALL_ERROR
+        )
+        
+        if(NOT PQMAGIC_INSTALL_RESULT EQUAL 0)
+            message(FATAL_ERROR "Failed to install PQMagic: ${PQMAGIC_INSTALL_ERROR}")
+        endif()
+        
+        # Set up imported target
+        add_library(pqmagic_target SHARED IMPORTED)
+        if(WIN32)
+            set_target_properties(pqmagic_target PROPERTIES
+                IMPORTED_LOCATION ${PQMAGIC_INSTALL_DIR}/lib/libpqmagic_std.dll
+                IMPORTED_IMPLIB ${PQMAGIC_INSTALL_DIR}/lib/libpqmagic_std_import.lib
+            )
+        elseif(APPLE)
+            set_target_properties(pqmagic_target PROPERTIES
+                IMPORTED_LOCATION ${PQMAGIC_INSTALL_DIR}/lib/libpqmagic_std.dylib
+            )
+        else()
+            set_target_properties(pqmagic_target PROPERTIES
+                IMPORTED_LOCATION ${PQMAGIC_INSTALL_DIR}/lib/libpqmagic_std.so
+            )
+        endif()
+        
+        # Set include directories
+        set(PQMAGIC_INCLUDE_DIR ${PQMAGIC_INSTALL_DIR}/include)
+        target_include_directories(pqmagic_target INTERFACE ${PQMAGIC_INCLUDE_DIR})
     endif()
-    
-    # Set include directories
-    set(PQMAGIC_INCLUDE_DIR ${PQMAGIC_INSTALL_DIR}/include)
-    target_include_directories(pqmagic_target INTERFACE ${PQMAGIC_INCLUDE_DIR})
+else()
+    message(STATUS "PQMagic target already exists")
+    if(ANDROID)
+        set(PQMAGIC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/PQMagic/include)
+    else()
+        set(PQMAGIC_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/pqmagic_install/include)
+    endif()
 endif()
 
 # Include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-if(EXISTS ${PQMAGIC_INSTALL_DIR}/include)
-    include_directories(${PQMAGIC_INSTALL_DIR}/include)
-else()
-    # Fallback to external PQMagic include directory
+if(ANDROID)
+    # For Android, always use the source directory
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/PQMagic/include)
+else()
+    # For Desktop, use install directory if it exists, otherwise fallback
+    if(EXISTS ${PQMAGIC_INSTALL_DIR}/include)
+        include_directories(${PQMAGIC_INSTALL_DIR}/include)
+    else()
+        include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/PQMagic/include)
+    endif()
 endif()
 
 # Source files
@@ -204,49 +239,24 @@ target_include_directories(pqmagic_wrapper
 # Compiler definitions
 target_compile_definitions(pqmagic_wrapper PRIVATE PQMAGIC_WRAPPER_BUILD)
 
-# Install library
+# Install library (disabled for Android)
+if(NOT ANDROID)
 install(TARGETS pqmagic_wrapper
-    EXPORT PQMagicWrapperTargets
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     PUBLIC_HEADER DESTINATION include
 )
+endif()
 
-# Install headers
+# Install headers (disabled for Android)
+if(NOT ANDROID)
 install(DIRECTORY include/
     DESTINATION include
     FILES_MATCHING PATTERN "*.h"
 )
 
-# Export targets
-install(EXPORT PQMagicWrapperTargets
-    FILE PQMagicWrapperTargets.cmake
-    NAMESPACE PQMagicWrapper::
-    DESTINATION lib/cmake/PQMagicWrapper
-)
-
-# Create config file
-include(CMakePackageConfigHelpers)
-configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/PQMagicWrapperConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/PQMagicWrapperConfig.cmake
-    INSTALL_DESTINATION lib/cmake/PQMagicWrapper
-)
-
-# Create version file
-write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/PQMagicWrapperConfigVersion.cmake
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
-)
-
-# Install config files
-install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/PQMagicWrapperConfig.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/PQMagicWrapperConfigVersion.cmake
-    DESTINATION lib/cmake/PQMagicWrapper
-)
+endif()
 
 # Unit tests
 if(BUILD_TESTS)
